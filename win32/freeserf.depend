@@ -787,3 +787,26 @@
 
 1386414871 d:\code\freeserf\src\version_vcs.h
 
+1325720122 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_dreamcast.h
+	"SDL_platform.h"
+
+1325720122 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_macos.h
+	"SDL_platform.h"
+	<MacTypes.h>
+
+1325720122 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_macosx.h
+	"SDL_platform.h"
+	<AvailabilityMacros.h>
+
+1325720122 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_symbian.h
+	"SDL_platform.h"
+	<stdarg.h>
+	<stddef.h>
+
+1325720122 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_os2.h
+	"SDL_platform.h"
+
+1325720122 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_minimal.h
+	"SDL_platform.h"
+	<stdarg.h>
+
