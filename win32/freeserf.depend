@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1386414771 source:d:\code\freeserf\src\audio.c
+1362432943 source:d:\code\freeserf\src\audio.c
 	<time.h>
 	"SDL.h"
 	"SDL_mixer.h"
@@ -115,9 +115,9 @@
 	"begin_code.h"
 	"close_code.h"
 
-1359242012 d:\code\freeserf\src\audio.h
+1386420383 d:\code\freeserf\src\audio.h
 
-1364505026 d:\code\freeserf\src\gfx.h
+1362432943 d:\code\freeserf\src\gfx.h
 	<stdint.h>
 	"SDL.h"
 
@@ -220,20 +220,20 @@
 	"begin_code.h"
 	"close_code.h"
 
-1359242012 d:\code\freeserf\src\data.h
+1362432943 d:\code\freeserf\src\data.h
 
-1359242012 d:\code\freeserf\src\log.h
+1362432944 d:\code\freeserf\src\log.h
 	<stdio.h>
 	<android/log.h>
 
-1359242012 d:\code\freeserf\src\list.h
+1362432944 d:\code\freeserf\src\list.h
 
-1359242012 d:\code\freeserf\src\pqueue.h
+1362432944 d:\code\freeserf\src\pqueue.h
 	"misc.h"
 
-1359242012 d:\code\freeserf\src\misc.h
+1362432944 d:\code\freeserf\src\misc.h
 
-1359242012 d:\code\freeserf\src\freeserf_endian.h
+1362432943 d:\code\freeserf\src\freeserf_endian.h
 	<config.h>
 	<sys/endian.h>
 	<endian.h>
@@ -242,22 +242,22 @@
 	<stdint.h>
 	<byteswap.h>
 
-1359242012 source:d:\code\freeserf\src\building.c
+1362432943 source:d:\code\freeserf\src\building.c
 	<stdio.h>
 	<stdlib.h>
 	<assert.h>
 	"building.h"
 
-1364503411 d:\code\freeserf\src\building.h
+1386420383 d:\code\freeserf\src\building.h
 	<stdint.h>
 	"map.h"
 
-1364503411 d:\code\freeserf\src\map.h
+1386420383 d:\code\freeserf\src\map.h
 	<stdlib.h>
 	<stdint.h>
 	"misc.h"
 
-1364503411 source:d:\code\freeserf\src\flag.c
+1386420383 source:d:\code\freeserf\src\flag.c
 	<stdio.h>
 	<stdlib.h>
 	<assert.h>
@@ -268,12 +268,12 @@
 	"list.h"
 	"misc.h"
 
-1364503411 d:\code\freeserf\src\flag.h
+1386420383 d:\code\freeserf\src\flag.h
 	"freeserf.h"
 	"list.h"
 	"map.h"
 
-1364505026 d:\code\freeserf\src\freeserf.h
+1386420383 d:\code\freeserf\src\freeserf.h
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -283,10 +283,10 @@
 	"building.h"
 	"serf.h"
 
-1364503411 d:\code\freeserf\src\random.h
+1367955353 d:\code\freeserf\src\random.h
 	<stdint.h>
 
-1364503411 d:\code\freeserf\src\serf.h
+1386420383 d:\code\freeserf\src\serf.h
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -294,7 +294,7 @@
 	"misc.h"
 	"log.h"
 
-1364503411 d:\code\freeserf\src\player.h
+1386420383 d:\code\freeserf\src\player.h
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -302,7 +302,7 @@
 	"map.h"
 	"gfx.h"
 
-1364503411 d:\code\freeserf\src\game.h
+1386420383 d:\code\freeserf\src\game.h
 	"player.h"
 	"flag.h"
 	"serf.h"
@@ -310,7 +310,7 @@
 	"map.h"
 	"freeserf.h"
 
-1364503411 source:d:\code\freeserf\src\freeserf.c
+1386420383 source:d:\code\freeserf\src\freeserf.c
 	<config.h>
 	<stdio.h>
 	<stdlib.h>
@@ -336,29 +336,29 @@
 	"savegame.h"
 	"version.h"
 
-1359242012 d:\code\freeserf\src\gui.h
+1386420383 d:\code\freeserf\src\gui.h
 	"gfx.h"
 	"list.h"
 
-1364503411 d:\code\freeserf\src\popup.h
+1386420383 d:\code\freeserf\src\popup.h
 	"gui.h"
 	"minimap.h"
 
-1364503411 d:\code\freeserf\src\minimap.h
+1386420383 d:\code\freeserf\src\minimap.h
 	"gui.h"
 	"map.h"
 
-1364503411 d:\code\freeserf\src\panel.h
+1367955353 d:\code\freeserf\src\panel.h
 	"gui.h"
 	"gfx.h"
 
-1364503411 d:\code\freeserf\src\viewport.h
+1386420383 d:\code\freeserf\src\viewport.h
 	"freeserf.h"
 	"gfx.h"
 	"gui.h"
 	"map.h"
 
-1364503411 d:\code\freeserf\src\interface.h
+1386420383 d:\code\freeserf\src\interface.h
 	"gui.h"
 	"viewport.h"
 	"panel.h"
@@ -367,23 +367,23 @@
 	"player.h"
 	"random.h"
 
-1359242012 d:\code\freeserf\src\sdl-video.h
+1386420383 d:\code\freeserf\src\sdl-video.h
 	<stdint.h>
 	"SDL.h"
 	"gfx.h"
 
-1359242012 d:\code\freeserf\src\debug.h
+1362432943 d:\code\freeserf\src\debug.h
 	<config.h>
 	<stdlib.h>
 	"log.h"
 
-1364503411 d:\code\freeserf\src\savegame.h
+1367955353 d:\code\freeserf\src\savegame.h
 	<stdio.h>
 	<stdlib.h>
 
-1359242012 d:\code\freeserf\src\version.h
+1362432944 d:\code\freeserf\src\version.h
 
-1364503411 source:d:\code\freeserf\src\game.c
+1386420383 source:d:\code\freeserf\src\game.c
 	<stdlib.h>
 	<assert.h>
 	"game.h"
@@ -396,7 +396,7 @@
 	"savegame.h"
 	"debug.h"
 
-1364505026 source:d:\code\freeserf\src\gfx.c
+1386420383 source:d:\code\freeserf\src\gfx.c
 	<config.h>
 	<stdio.h>
 	<stdlib.h>
@@ -414,7 +414,7 @@
 	"data.h"
 	"log.h"
 
-1364503411 source:d:\code\freeserf\src\gui.c
+1386420383 source:d:\code\freeserf\src\gui.c
 	<stdlib.h>
 	"gui.h"
 	"gfx.h"
@@ -422,7 +422,7 @@
 	"list.h"
 	"misc.h"
 
-1364503411 source:d:\code\freeserf\src\interface.c
+1386420383 source:d:\code\freeserf\src\interface.c
 	<time.h>
 	"interface.h"
 	"gui.h"
@@ -435,19 +435,19 @@
 	"debug.h"
 	"freeserf_endian.h"
 
-1359242012 source:d:\code\freeserf\src\list.c
+1362432944 source:d:\code\freeserf\src\list.c
 	<config.h>
 	<stdio.h>
 	<stdlib.h>
 	"list.h"
 
-1359242012 source:d:\code\freeserf\src\log.c
+1362432944 source:d:\code\freeserf\src\log.c
 	<stdio.h>
 	<stdlib.h>
 	<stdarg.h>
 	"log.h"
 
-1364503411 source:d:\code\freeserf\src\map.c
+1386420383 source:d:\code\freeserf\src\map.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -458,7 +458,7 @@
 	"misc.h"
 	"debug.h"
 
-1364503411 source:d:\code\freeserf\src\minimap.c
+1386420383 source:d:\code\freeserf\src\minimap.c
 	"minimap.h"
 	"gui.h"
 	"viewport.h"
@@ -468,7 +468,7 @@
 	"player.h"
 	"misc.h"
 
-1364503411 source:d:\code\freeserf\src\panel.c
+1386420383 source:d:\code\freeserf\src\panel.c
 	"panel.h"
 	"gui.h"
 	"viewport.h"
@@ -480,14 +480,14 @@
 	"gfx.h"
 	"audio.h"
 
-1364503411 source:d:\code\freeserf\src\pathfinder.c
+1386420383 source:d:\code\freeserf\src\pathfinder.c
 	"map.h"
 	"pqueue.h"
 	"list.h"
 	"game.h"
 	"freeserf.h"
 
-1364503411 source:d:\code\freeserf\src\player.c
+1386420383 source:d:\code\freeserf\src\player.c
 	<stdio.h>
 	<stdlib.h>
 	<assert.h>
@@ -496,7 +496,7 @@
 	"game.h"
 	"debug.h"
 
-1364503411 source:d:\code\freeserf\src\popup.c
+1386420383 source:d:\code\freeserf\src\popup.c
 	<math.h>
 	"popup.h"
 	"gfx.h"
@@ -510,18 +510,18 @@
 	"viewport.h"
 	"minimap.h"
 
-1359242012 source:d:\code\freeserf\src\pqueue.c
+1362432944 source:d:\code\freeserf\src\pqueue.c
 	<stdlib.h>
 	"pqueue.h"
 	"misc.h"
 
-1364503411 source:d:\code\freeserf\src\random.c
+1367955353 source:d:\code\freeserf\src\random.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
 	"random.h"
 
-1364503411 source:d:\code\freeserf\src\savegame.c
+1386420383 source:d:\code\freeserf\src\savegame.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -531,7 +531,7 @@
 	"list.h"
 	"debug.h"
 
-1359242012 source:d:\code\freeserf\src\sdl-video.c
+1386420383 source:d:\code\freeserf\src\sdl-video.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -545,7 +545,7 @@
 	"version.h"
 	"log.h"
 
-1364505026 source:d:\code\freeserf\src\serf.c
+1386420383 source:d:\code\freeserf\src\serf.c
 	<stdio.h>
 	<stdlib.h>
 	<assert.h>
@@ -556,11 +556,11 @@
 	"misc.h"
 	"debug.h"
 
-1386414877 source:d:\code\freeserf\src\version.c
+1362432944 source:d:\code\freeserf\src\version.c
 	"version.h"
 	"version_vcs.h"
 
-1364505026 source:d:\code\freeserf\src\viewport.c
+1386420383 source:d:\code\freeserf\src\viewport.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -579,11 +579,11 @@
 	"audio.h"
 	"pathfinder.h"
 
-1359242012 d:\code\freeserf\src\pathfinder.h
+1362432944 d:\code\freeserf\src\pathfinder.h
 	"map.h"
 	"freeserf.h"
 
-1386369269 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_mixer.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_mixer.h
 	"SDL_types.h"
 	"SDL_rwops.h"
 	"SDL_audio.h"
@@ -592,10 +592,10 @@
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_types.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_types.h
 	"SDL_stdinc.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_stdinc.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_stdinc.h
 	"SDL_config.h"
 	<sys/types.h>
 	<stdio.h>
@@ -621,7 +621,7 @@
 	<stdlib.h>
 	"close_code.h"
 
-1326110987 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config.h
 	"SDL_platform.h"
 	"SDL_config_dreamcast.h"
 	"SDL_config_macos.h"
@@ -631,27 +631,27 @@
 	"SDL_config_os2.h"
 	"SDL_config_minimal.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_platform.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_platform.h
 
-1326110994 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_win32.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_win32.h
 	"SDL_platform.h"
 
-1326111000 d:\code\freeserf\win32\sdl-1.2.15\include\begin_code.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\begin_code.h
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\close_code.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\close_code.h
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_rwops.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_rwops.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_error.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_error.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_audio.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_audio.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_endian.h"
@@ -661,19 +661,19 @@
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_endian.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_endian.h
 	"SDL_stdinc.h"
 	<endian.h>
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_mutex.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_mutex.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_thread.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_thread.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_mutex.h"
@@ -681,12 +681,12 @@
 	<process.h>
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_version.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_version.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl.h
 	"SDL_main.h"
 	"SDL_stdinc.h"
 	"SDL_audio.h"
@@ -705,25 +705,25 @@
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_main.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_main.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_cdrom.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_cdrom.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_cpuinfo.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_cpuinfo.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_events.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_events.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_active.h"
@@ -734,58 +734,58 @@
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_active.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_active.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_keyboard.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_keyboard.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_keysym.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_keysym.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_keysym.h
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_mouse.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_mouse.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_video.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_video.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_video.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_rwops.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_joystick.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_joystick.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_quit.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_quit.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_loadso.h
-	"SDL_stdinc.h"
-	"SDL_error.h"
-	"begin_code.h"
-	"close_code.h"
-
-1325738639 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_timer.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_loadso.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386414871 d:\code\freeserf\src\version_vcs.h
+1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_timer.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1386420645 d:\code\freeserf\src\version_vcs.h
 
 1325720122 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_dreamcast.h
 	"SDL_platform.h"
