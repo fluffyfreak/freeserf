@@ -29,7 +29,6 @@
 #include "gfx.h"
 #include "map.h"
 #include "random.h"
-#include "building.h"
 #include "serf.h"
 
 
@@ -45,6 +44,8 @@
 
 
 typedef enum {
+	DIR_NONE = -1,
+
 	DIR_RIGHT = 0,
 	DIR_DOWN_RIGHT,
 	DIR_DOWN,
@@ -87,7 +88,7 @@ typedef enum {
 
 typedef enum {
 	BOX_MAP = 1,
-	BOX_MAP_OVERLAY,
+	BOX_MAP_OVERLAY, /* UNUSED */
 	BOX_MINE_BUILDING,
 	BOX_BASIC_BLD,
 	BOX_BASIC_BLD_FLIP,
@@ -121,7 +122,7 @@ typedef enum {
 	BOX_SETT_5,
 	BOX_QUIT_CONFIRM,
 	BOX_NO_SAVE_QUIT_CONFIRM,
-	BOX_SETT_SELECT_FILE,
+	BOX_SETT_SELECT_FILE, /* UNUSED */
 	BOX_OPTIONS,
 	BOX_CASTLE_RES,
 	BOX_MINE_OUTPUT,
@@ -149,6 +150,8 @@ typedef enum {
 } box_t;
 
 typedef enum {
+	RESOURCE_NONE = -1,
+
 	RESOURCE_FISH = 0,
 	RESOURCE_PIG,
 	RESOURCE_MEAT,
@@ -184,44 +187,27 @@ typedef struct {
 	int x, y;
 } sprite_loc_t;
 
-typedef struct {
-	int face;
-	int supplies;
-	int intelligence;
-	int reproduction;
-} player_init_t;
-
-typedef struct {
-	/* 8 */
-	random_state_t rnd;
-	int pl_0_supplies;
-	int pl_0_reproduction;
-	int pl_1_face;
-	int pl_1_intelligence;
-	int pl_1_supplies;
-	int pl_1_reproduction;
-	int pl_2_face;
-	int pl_2_intelligence;
-	int pl_2_supplies;
-	int pl_2_reproduction;
-	int pl_3_face;
-	int pl_3_intelligence;
-	int pl_3_supplies;
-	int pl_3_reproduction;
-	/* ... */
-} map_spec_t;
-
 typedef struct inventory inventory_t;
 
 struct inventory {
 	int player_num;
 	int res_dir;
-	int flg_index;
-	int bld_index;
+	/* Index of flag connected to this inventory */
+	int flag;
+	/* Index of building containing this inventory */
+	int building;
+	/* Count of resources */
 	int resources[26];
-	int out_queue[2];
-	int out_dest[2];
-	int spawn_priority;
+	/* Resources waiting to be moved out */
+	struct {
+		resource_type_t type;
+		uint dest;
+	} out_queue[2];
+	/* Count of serfs waiting to move out */
+	uint serfs_out;
+	/* Count of generic serfs */
+	int generic_count;
+	/* Indices to serfs of each type */
 	int serfs[27];
 };
 

@@ -116,6 +116,8 @@ pathfinder_map(map_pos_t start, map_pos_t end, uint *length)
 				n = n->parent;
 			}
 
+			if (*length == 0) break;
+
 			solution = malloc(*length*sizeof(dir_t));
 			if (solution == NULL) abort();
 
@@ -134,7 +136,8 @@ pathfinder_map(map_pos_t start, map_pos_t end, uint *length)
 			uint cost = actual_cost(node->pos, d);
 
 			/* Check if neighbour is valid. */
-			if (!game_road_segment_valid(node->pos, d)) {
+			if (!game_road_segment_valid(node->pos, d) ||
+			    (MAP_OBJ(new_pos) == MAP_OBJ_FLAG && new_pos != end)) {
 				continue;
 			}
 

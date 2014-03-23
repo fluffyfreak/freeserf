@@ -31,6 +31,10 @@
 
 #define DEFAULT_GAME_SPEED  2
 
+#define GAME_MAX_PLAYER_COUNT  4
+
+
+typedef void game_update_map_height_func(map_pos_t pos, void *data);
 
 typedef struct {
 	map_t map; /* ADDITION */
@@ -55,21 +59,20 @@ typedef struct {
 	uint16_t map_row_pairs; */
 	int16_t map_water_level;
 	int16_t map_max_lake_area;
-	uint16_t map_max_serfs_left;
-	int map_field_4A;
+	/*uint16_t map_max_serfs_left;*/
+	uint max_serfs_from_land;
 	uint32_t map_gold_deposit;
 	/* 50 */
 	uint16_t map_size;
-	int map_field_52;
 	/* 58 */
-	uint16_t map_62_5_times_regions;
+	uint max_serfs_per_player;
 	int map_gold_morale_factor;
 	/* 5E */
 	int winning_player;
 	/* 60 */
 	/* uint16_t map_move_left_2; MOVED to map_t */
 	/* 64 */
-	player_t *player[4];
+	player_t *player[GAME_MAX_PLAYER_COUNT];
 	/* 78 */
 	/*interface_t *interface;*/
 	/* 80 */
@@ -96,7 +99,7 @@ typedef struct {
 	inventory_t *inventories;
 	uint8_t *inventory_bitmap;
 	/* 108 */
-	frame_t *frame;
+	/*frame_t *frame;*/
 	/* 1C2 */
 	/* MOVED to map_t 
 	uint16_t map_cols;
@@ -104,7 +107,7 @@ typedef struct {
 	/* 1C8 */
 	uint8_t svga; /* flags */
 	/* 1D6 */
-	player_init_t pl_init[4];
+	/*player_init_t pl_init[4];*/
 	/* 1EE */
 	random_state_t init_map_rnd;
 	/* 1FA */
@@ -116,10 +119,10 @@ typedef struct {
 	/* Increased by one no matter the game speed. */
 	uint const_tick;
 	/* 20E */
-	uint16_t game_stats_counter;
-	uint16_t history_counter;
+	uint game_stats_counter;
+	uint history_counter;
 	random_state_t rnd;
-	uint8_t field_218[4];
+	/*uint8_t field_218[4];*/
 	uint16_t map_regions;
 	/* OBSOLETE by local vars */
 	/*uint8_t init_map_old_type;
@@ -140,8 +143,8 @@ typedef struct {
 	/* OBSOLETE by local vars*/
 	/*uint16_t build_road_source_flag;
 	uint16_t build_road_out_dir;
-	uint16_t build_road_in_dir;*/
-	uint16_t field_24E;
+	uint16_t build_road_in_dir;
+	uint16_t field_24E;*/
 	/* 250 */
 	/* OBSOLETE by local vars */
 	/*uint16_t short_row_length;
@@ -196,6 +199,13 @@ typedef struct {
 	/* 380 */
 	int player_score_leader;
 	/* ... */
+
+	/* Callback for map height changes */
+	game_update_map_height_func *update_map_height_cb;
+	void *update_map_height_data;
+
+	int knight_morale_counter;
+	int inventory_schedule_counter;
 } game_t;
 
 /* Global game object */
@@ -204,35 +214,45 @@ game_t game;
 
 /* External interface */
 void game_init();
-int game_load_random_map();
+int game_add_player(uint face, uint color, uint supplies,
+		    uint reproduction, uint intelligence);
+int game_load_mission_map(int m);
+int game_load_random_map(int size, const random_state_t *rnd);
 int game_load_save_game(const char *path);
+void game_allocate_objects();
 
 void game_update();
 void game_pause(int enable);
 
 void game_prepare_ground_analysis(map_pos_t pos, int estimates[5]);
-int game_send_geologist(flag_t *dest, int dest_index);
-
-int game_road_segment_valid(map_pos_t pos, dir_t dir);
-int game_get_road_length_value(int length);
+int game_send_geologist(flag_t *dest);
 
 int game_get_leveling_height(map_pos_t pos);
+
+int game_road_segment_valid(map_pos_t pos, dir_t dir);
 
 int game_can_build_military(map_pos_t pos);
 int game_can_build_small(map_pos_t pos);
 int game_can_build_mine(map_pos_t pos);
 int game_can_build_large(map_pos_t pos);
-int game_can_build_building(map_pos_t pos, building_type_t type, const player_t *player);
+int game_can_build_building(map_pos_t pos, building_type_t type,
+			    const player_t *player);
 int game_can_build_castle(map_pos_t pos, const player_t *player);
 int game_can_build_flag(map_pos_t pos, const player_t *player);
 int game_can_player_build(map_pos_t pos, const player_t *player);
 
-int game_build_flag(map_pos_t pos, player_t *player);
-int game_build_building(map_pos_t pos, building_type_t type, player_t *player);
-int game_build_castle(map_pos_t pos, player_t *player);
+int game_can_build_road(map_pos_t source, const dir_t dirs[], uint length,
+			const player_t *player, map_pos_t *dest, int *water);
 
 int game_can_demolish_flag(map_pos_t pos, const player_t *player);
 int game_can_demolish_road(map_pos_t pos, const player_t *player);
+
+int game_build_road(map_pos_t source, const dir_t dirs[],
+		    uint length, const player_t *player);
+
+int game_build_flag(map_pos_t pos, player_t *player);
+int game_build_building(map_pos_t pos, building_type_t type, player_t *player);
+int game_build_castle(map_pos_t pos, player_t *player);
 
 int game_demolish_road(map_pos_t pos, player_t *player);
 int game_demolish_flag(map_pos_t pos, player_t *player);
@@ -260,8 +280,12 @@ serf_t *game_get_serf(int index);
 void game_free_serf(int index);
 
 void game_calculate_military_flag_state(building_t *building);
+void game_init_land_ownership();
 void game_update_land_ownership(map_pos_t pos);
 void game_occupy_enemy_building(building_t *building, int player);
+
+void game_cancel_transported_resource(resource_type_t type, uint dest);
+void game_lose_resource(resource_type_t type);
 
 uint16_t game_random_int();
 

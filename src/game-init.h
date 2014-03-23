@@ -1,5 +1,5 @@
 /*
- * minimap.h - Minimap GUI component
+ * game-init.h - Game initialization GUI component header
  *
  * Copyright (C) 2013  Jon Lund Steffensen <jonlst@gmail.com>
  *
@@ -19,34 +19,27 @@
  * along with freeserf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MINIMAP_H
-#define _MINIMAP_H
+#ifndef _GAME_INIT_H
+#define _GAME_INIT_H
 
 #include "gui.h"
-#include "map.h"
+#include "game.h"
+
+struct interface;
 
 typedef struct {
 	gui_object_t obj;
 	struct interface *interface;
 
-	int offset_x, offset_y;
-	int scale;
+	int map_size;
+	int game_mission;
 
-	int advanced;
-	int flags;
-} minimap_t;
+	uint face[GAME_MAX_PLAYER_COUNT];
+	uint intelligence[GAME_MAX_PLAYER_COUNT];
+	uint supplies[GAME_MAX_PLAYER_COUNT];
+	uint reproduction[GAME_MAX_PLAYER_COUNT];
+} game_init_box_t;
 
+void game_init_box_init(game_init_box_t *box, struct interface *interface);
 
-void minimap_init(minimap_t *minimap, struct interface *interface);
-
-void minimap_set_scale(minimap_t *minimap, int scale);
-
-void minimap_move_to_map_pos(minimap_t *minimap, map_pos_t pos);
-void minimap_move_by_pixels(minimap_t *minimap, int x, int y);
-map_pos_t minimap_get_current_map_pos(minimap_t *minimap);
-
-void minimap_screen_pix_from_map_pos(minimap_t *minimap, map_pos_t pos, int *sx, int *sy);
-map_pos_t minimap_map_pos_from_screen_pix(minimap_t *minimap, int x, int y);
-
-
-#endif /* !_MINIMAP_H */
+#endif /* !_GAME_INIT_H */

@@ -49,6 +49,7 @@ gui_object_init(gui_object_t *obj)
 	obj->width = 0;
 	obj->height = 0;
 	obj->displayed = 0;
+	obj->enabled = 1;
 	obj->redraw = 0;
 	obj->parent = NULL;
 
@@ -65,6 +66,7 @@ gui_object_redraw(gui_object_t *obj, frame_t *frame)
 int
 gui_object_handle_event(gui_object_t *obj, const gui_event_t *event)
 {
+	if (!obj->enabled) return 0;
 	return obj->handle_event(obj, event);
 }
 
@@ -81,8 +83,14 @@ gui_object_set_displayed(gui_object_t *obj, int displayed)
 	if (displayed) {
 		gui_object_set_redraw(obj);
 	} else if (obj->parent != NULL) {
-		gui_object_set_redraw((gui_object_t *)obj->parent);
+		gui_object_set_redraw(GUI_OBJECT(obj->parent));
 	}
+}
+
+void
+gui_object_set_enabled(gui_object_t *obj, int enabled)
+{
+	obj->enabled = enabled;
 }
 
 void
@@ -97,13 +105,13 @@ gui_object_set_redraw(gui_object_t *obj)
 static void
 gui_container_set_redraw_child_default(gui_container_t *cont, gui_object_t *child)
 {
-	gui_object_set_redraw((gui_object_t *)cont);
+	gui_object_set_redraw(GUI_OBJECT(cont));
 }
 
 void
 gui_container_init(gui_container_t *cont)
 {
-	gui_object_init((gui_object_t *)cont);
+	gui_object_init(GUI_OBJECT(cont));
 	cont->set_redraw_child = gui_container_set_redraw_child_default;
 }
 
@@ -111,4 +119,11 @@ void
 gui_container_set_redraw_child(gui_container_t *cont, gui_object_t *child)
 {
 	cont->set_redraw_child(cont, child);
+}
+
+int
+gui_container_get_child_position(gui_container_t *cont, gui_object_t *child,
+				 int *x, int *y)
+{
+	return cont->get_child_position(cont, child, x, y);
 }

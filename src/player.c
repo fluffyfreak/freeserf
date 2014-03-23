@@ -206,14 +206,10 @@ player_promote_serfs_to_knights(player_t *player, int number)
 				    inv->resources[RESOURCE_SHIELD] > 0) {
 					inv->resources[RESOURCE_SWORD] -= 1;
 					inv->resources[RESOURCE_SHIELD] -= 1;
-					inv->spawn_priority -= 1;
+					inv->generic_count -= 1;
 					inv->serfs[SERF_GENERIC] = 0;
 
-					serf->type = (SERF_KNIGHT_0 << 2) | (serf->type & 3);
-
-					player->serf_count[SERF_GENERIC] -= 1;
-					player->serf_count[SERF_KNIGHT_0] += 1;
-					player->total_military_score += 1;
+					serf_set_type(serf, SERF_KNIGHT_0);
 
 					promoted += 1;
 					number -= 1;
@@ -232,7 +228,8 @@ available_knights_at_pos(player_t *player, map_pos_t pos, int index, int dist)
 	const int min_level_tower[] = { 1, 2, 3, 4, 6 };
 	const int min_level_fortress[] = { 1, 3, 6, 9, 12 };
 
-	if (MAP_OWNER(pos) != player->player_num || MAP_WATER(pos) ||
+	if (MAP_OWNER(pos) != player->player_num ||
+	    MAP_TYPE_UP(pos) < 4 || MAP_TYPE_DOWN(pos) < 4 ||
 	    MAP_OBJ(pos) < MAP_OBJ_SMALL_BUILDING ||
 	    MAP_OBJ(pos) > MAP_OBJ_CASTLE) {
 		return index;
@@ -422,4 +419,14 @@ player_start_attack(player_t *player)
 			if (player->knights_attacking == 0) return;
 		}
 	}
+}
+
+/* Begin cycling knights by sending knights from military buildings
+   to inventories. The knights can then be replaced by more experienced
+   knights. */
+void
+player_cycle_knights(player_t *player)
+{
+	player->flags |= BIT(2) | BIT(4);
+	player->knight_cycle_counter = 2400;
 }

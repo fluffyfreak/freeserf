@@ -1,7 +1,7 @@
 /*
  * sdl-video.c - SDL graphics rendering
  *
- * Copyright (C) 2012  Jon Lund Steffensen <jonlst@gmail.com>
+ * Copyright (C) 2013  Jon Lund Steffensen <jonlst@gmail.com>
  *
  * This file is part of freeserf.
  *
@@ -33,25 +33,23 @@
 #include "misc.h"
 #include "version.h"
 #include "log.h"
+#include "data.h"
 
 
-#define RSHIFT   0
-#define GSHIFT   8
-#define BSHIFT  16
-#define ASHIFT  24
-
-#define RMASK  (0xff << RSHIFT)
-#define GMASK  (0xff << GSHIFT)
-#define BMASK  (0xff << BSHIFT)
-#define AMASK  (0xff << ASHIFT)
-
-#define MAX_DIRTY_RECTS  128
+static SDL_Window *window;
+static SDL_Renderer *renderer;
+static SDL_Texture *screen_texture;
+static int bpp = 32;
+static Uint32 Rmask = 0xFF000000;
+static Uint32 Gmask = 0x00FF0000;
+static Uint32 Bmask = 0x0000FF00;
+static Uint32 Amask = 0x000000FF;
+static Uint32 pixel_format = SDL_PIXELFORMAT_RGBA8888;
 
 static frame_t screen;
+static int is_fullscreen;
 static SDL_Color pal_colors[256];
-
-static SDL_Rect dirty_rects[MAX_DIRTY_RECTS];
-static int dirty_rect_counter = 0;
+static SDL_Cursor *cursor = NULL;
 
 
 struct surface {
@@ -163,16 +161,43 @@ sdl_init()
 	/* Display program name and version in caption */
 	char caption[64];
 	snprintf(caption, 64, "freeserf %s", FREESERF_VERSION);
-	SDL_WM_SetCaption(caption, caption);
+
+	/* Create window and renderer */
+	window = SDL_CreateWindow(caption,
+				  SDL_WINDOWPOS_UNDEFINED,
+				  SDL_WINDOWPOS_UNDEFINED,
+				  800, 600, SDL_WINDOW_RESIZABLE);
+	if (window == NULL) {
+		LOGE("sdl-video", "Unable to create SDL window: %s.", SDL_GetError());
+		return -1;
+	}
+
+	/* Create renderer for window */
+	renderer = SDL_CreateRenderer(window, -1, 0);
+	if (renderer == NULL) {
+		LOGE("sdl-video", "Unable to create SDL renderer: %s.", SDL_GetError());
+		return -1;
+	}
+
+	/* Determine optimal pixel format for current window */
+	SDL_RendererInfo render_info = {0};
+	SDL_GetRendererInfo(renderer, &render_info);
+	for (int i = 0; i < render_info.num_texture_formats; i++) {
+		Uint32 format = render_info.texture_formats[i];
+		int bpp = SDL_BITSPERPIXEL(format);
+		if (32 == bpp) {
+			pixel_format = format;
+			break;
+		}
+	}
+	SDL_PixelFormatEnumToMasks(pixel_format, &bpp, &Rmask, &Gmask, &Bmask, &Amask);
+
+	/* Set scaling mode */
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
 	/* Exit on signals */
 	signal(SIGINT, exit);
 	signal(SIGTERM, exit);
-
-	/* Don't show cursor */
-	SDL_ShowCursor(SDL_DISABLE);
-
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
 	/* Init sprite cache */
 	surface_ht_init(&transp_sprite_cache, 4096);
@@ -185,37 +210,84 @@ sdl_init()
 void
 sdl_deinit()
 {
+	sdl_set_cursor(NULL);
 	SDL_Quit();
-}
-
-int
-sdl_set_resolution(int width, int height, int fullscreen)
-{
-	int flags = SDL_SWSURFACE | SDL_DOUBLEBUF;
-	if (fullscreen) flags |= SDL_FULLSCREEN;
-
-	screen.surf = SDL_SetVideoMode(width, height, 32, flags);
-	if (screen.surf == NULL) {
-		LOGE("sdl-video", "Unable to set video mode: %s.", SDL_GetError());
-		return -1;
-	}
-
-	SDL_GetClipRect(screen.surf, &screen.clip);
-
-	return 0;
 }
 
 static SDL_Surface *
 sdl_create_surface(int width, int height)
 {
-	SDL_Surface *surf = SDL_CreateRGBSurface(SDL_SRCALPHA,
-						 width, height, 32, RMASK, GMASK, BMASK, AMASK);
+	SDL_Surface *surf = SDL_CreateRGBSurface(0, width, height, bpp,
+						 Rmask, Gmask, Bmask, Amask);
 	if (surf == NULL) {
 		LOGE("sdl-video", "Unable to create SDL surface: %s.", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 
 	return surf;
+}
+
+int
+sdl_set_resolution(int width, int height, int fullscreen)
+{
+	/* Set fullscreen mode */
+	int r = SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+	if (r < 0) {
+		LOGE("sdl-video", "Unable to set window fullscreen: %s.", SDL_GetError());
+		return -1;
+	}
+
+	/* Allocate new screen surface and texture */
+	if (screen.surf != NULL) SDL_FreeSurface(screen.surf);
+	screen.surf = sdl_create_surface(width, height);
+
+	if (screen_texture != NULL) SDL_DestroyTexture(screen_texture);
+	screen_texture = SDL_CreateTexture(renderer, pixel_format,
+					   SDL_TEXTUREACCESS_STREAMING,
+					   width, height);
+	if (screen_texture == NULL) {
+		LOGE("sdl-video", "Unable to create SDL texture: %s.", SDL_GetError());
+		return -1;
+	}
+
+	/* Set logical size of screen */
+	r = SDL_RenderSetLogicalSize(renderer, width, height);
+	if (r < 0) {
+		LOGE("sdl-video", "Unable to set logical size: %s.", SDL_GetError());
+		return -1;
+	}
+
+	/* Reset clipping */
+	screen.clip.x = 0;
+	screen.clip.y = 0;
+	screen.clip.w = width;
+	screen.clip.h = height;
+	SDL_SetClipRect(screen.surf, &screen.clip);
+
+	is_fullscreen = fullscreen;
+
+	return 0;
+}
+
+void
+sdl_get_resolution(int *width, int *height)
+{
+	SDL_GetWindowSize(window, width, height);
+}
+
+int
+sdl_set_fullscreen(int enable)
+{
+	frame_t *screen = sdl_get_screen_frame();
+	int width = sdl_frame_get_width(screen);
+	int height = sdl_frame_get_height(screen);
+	return sdl_set_resolution(width, height, enable);
+}
+
+int
+sdl_is_fullscreen()
+{
+	return is_fullscreen;
 }
 
 frame_t *
@@ -234,6 +306,12 @@ sdl_frame_init(frame_t *frame, int x, int y, int width, int height, frame_t *des
 	frame->clip.h = height;
 }
 
+void
+sdl_frame_deinit(frame_t *frame)
+{
+	SDL_FreeSurface(frame->surf);
+}
+
 int
 sdl_frame_get_width(const frame_t *frame)
 {
@@ -245,6 +323,13 @@ sdl_frame_get_height(const frame_t *frame)
 {
 	return frame->clip.h;
 }
+
+void
+sdl_warp_mouse(int x, int y)
+{
+	SDL_WarpMouseInWindow(NULL, x, y);
+}
+
 
 static SDL_Surface *
 create_surface_from_data(void *data, int width, int height, int transparent) {
@@ -261,8 +346,8 @@ create_surface_from_data(void *data, int width, int height, int transparent) {
 	}
 
 	/* Set sprite palette */
-	r = SDL_SetPalette(surf8, SDL_LOGPAL | SDL_PHYSPAL, pal_colors, 0, 256);
-	if (r == 0) {
+	r = SDL_SetPaletteColors(surf8->format->palette, pal_colors, 0, 256);
+	if (r < 0) {
 		LOGE("sdl-video", "Unable to set palette for sprite.");
 		exit(EXIT_FAILURE);
 	}
@@ -272,25 +357,22 @@ create_surface_from_data(void *data, int width, int height, int transparent) {
 
 	if (transparent) {
 		/* Set color key */
-		r = SDL_SetColorKey(surf8, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+		r = SDL_SetColorKey(surf8, SDL_TRUE, 0);
 		if (r < 0) {
 			LOGE("sdl-video", "Unable to set color key for sprite.");
 			exit(EXIT_FAILURE);
 		}
-
-		surf = SDL_DisplayFormatAlpha(surf8);
-	} else {
-		surf = SDL_DisplayFormat(surf8);
 	}
 
+	surf = SDL_ConvertSurface(surf8, screen.surf->format, 0);
 	if (surf == NULL) {
 		LOGE("sdl-video", "Unable to convert sprite surface: %s.",
 		     SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	
+
 	SDL_FreeSurface(surf8);
-	
+
 	return surf;
 }
 
@@ -307,7 +389,7 @@ create_transp_surface(const sprite_t *sprite, int offset)
 	uint8_t *unpack = calloc(unpack_size, sizeof(uint8_t));
 	if (unpack == NULL) abort();
 
-	gfx_unpack_transparent_sprite(unpack, data, unpack_size, offset);
+	data_unpack_transparent_sprite(unpack, data, unpack_size, offset);
 
 	SDL_Surface *surf = create_surface_from_data(unpack, width, height, 1);
 
@@ -331,7 +413,7 @@ create_masked_transp_surface(const sprite_t *sprite, const sprite_t *mask, int m
 	uint8_t *unpack = calloc(unpack_size, sizeof(uint8_t));
 	if (unpack == NULL) abort();
 
-	gfx_unpack_transparent_sprite(unpack, s_data, unpack_size, 0);
+	data_unpack_transparent_sprite(unpack, s_data, unpack_size, 0);
 
 	size_t m_width = le16toh(mask->w);
 	size_t m_height = le16toh(mask->h);
@@ -359,7 +441,7 @@ create_masked_transp_surface(const sprite_t *sprite, const sprite_t *mask, int m
 	uint8_t *m_unpack = calloc(m_unpack_size, sizeof(uint8_t));
 	if (m_unpack == NULL) abort();
 
-	gfx_unpack_mask_sprite(m_unpack, m_data, m_unpack_size);
+	data_unpack_mask_sprite(m_unpack, m_data, m_unpack_size);
 
 	/* Fill alpha value from mask data */
 	for (int y = 0; y < m_height; y++) {
@@ -372,7 +454,7 @@ create_masked_transp_surface(const sprite_t *sprite, const sprite_t *mask, int m
 
 	free(m_unpack);
 
-	SDL_Surface *surf = create_surface_from_data(s_copy, m_width, m_height, 1);
+	SDL_Surface *surf = create_surface_from_data(s_copy, (int)m_width, (int)m_height, 1);
 
 	free(s_copy);
 
@@ -512,7 +594,7 @@ create_overlay_surface(const sprite_t *sprite)
 	uint8_t *unpack = calloc(unpack_size, sizeof(uint8_t));
 	if (unpack == NULL) abort();
 
-	gfx_unpack_overlay_sprite(unpack, data, unpack_size);
+	data_unpack_overlay_sprite(unpack, data, unpack_size);
 
 	/* Create sprite surface */
 	SDL_Surface *surf = sdl_create_surface((int)width, (int)height);
@@ -602,7 +684,7 @@ create_masked_surface(const sprite_t *sprite, const sprite_t *mask)
 	uint8_t *m_unpack = calloc(unpack_size, sizeof(uint8_t));
 	if (m_unpack == NULL) abort();
 
-	gfx_unpack_mask_sprite(m_unpack, m_data, unpack_size);
+	data_unpack_mask_sprite(m_unpack, m_data, unpack_size);
 
 	/* Fill alpha value from mask data */
 	for (int y = 0; y < m_height; y++) {
@@ -710,41 +792,40 @@ sdl_fill_rect(int x, int y, int width, int height, int color, frame_t *dest)
 }
 
 void
-sdl_mark_dirty(int x, int y, int width, int height)
-{
-	if (dirty_rect_counter < MAX_DIRTY_RECTS) {
-		dirty_rects[dirty_rect_counter].x = x;
-		dirty_rects[dirty_rect_counter].y = y;
-		dirty_rects[dirty_rect_counter].w = width;
-		dirty_rects[dirty_rect_counter].h = height;
-	}
-	dirty_rect_counter += 1;
-}
-
-void
 sdl_swap_buffers()
 {
-	if (dirty_rect_counter > MAX_DIRTY_RECTS) {
-		SDL_UpdateRect(screen.surf, 0, 0, 0, 0);
-	} else if (dirty_rect_counter > 0) {
-		SDL_UpdateRects(screen.surf, dirty_rect_counter, dirty_rects);
-	}
-	dirty_rect_counter = 0;
+	SDL_UpdateTexture(screen_texture, NULL,
+			  screen.surf->pixels,
+			  screen.surf->pitch);
+
+	SDL_RenderClear(renderer);
+	SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
+	SDL_RenderPresent(renderer);
 }
 
 void
 sdl_set_palette(const uint8_t *palette)
 {
-	/* Entry 0 is always black */
-	pal_colors[0].r = 0;
-	pal_colors[0].g = 0;
-	pal_colors[0].b = 0;
-
 	/* Fill palette */
 	for (int i = 0; i < 256; i++) {
 		pal_colors[i].r = palette[i*3];
 		pal_colors[i].g = palette[i*3+1];
 		pal_colors[i].b = palette[i*3+2];
+		pal_colors[i].a = SDL_ALPHA_OPAQUE;
 	}
 }
 
+void
+sdl_set_cursor(const sprite_t *sprite)
+{
+	if (NULL != cursor) {
+		SDL_SetCursor(NULL);
+		SDL_FreeCursor(cursor);
+	}
+	if (NULL == sprite) {
+		return;
+	}
+	SDL_Surface *surface = create_transp_surface(sprite, 0);
+	cursor = SDL_CreateColorCursor(surface, 8, 8);
+	SDL_SetCursor(cursor);
+}

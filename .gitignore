@@ -17,7 +17,6 @@
 *.app
 
 # freeserf specific
-.DS_Store
 .deps
 Makefile
 Makefile.in
@@ -33,5 +32,13 @@ depcomp
 freeserf
 install-sh
 missing
-src/version_vcs.h
+src/version-vcs.h
 stamp-h1
+compile
+src/.dirstamp
+
+# mac specific
+*.xcworkspace
+xcuserdata
+mac/version_vcs.h
+.DS_Store

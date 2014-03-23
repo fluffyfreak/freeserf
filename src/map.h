@@ -56,18 +56,7 @@
 
 
 /* Extractors for map data. */
-#define MAP_HAS_FLAG(pos)  ((uint)((game.map.tiles[(pos)].flags >> 7) & 1))
-
-/* This bit is used to indicate a band of positions in the water, that are
-   entirely surrounded by water tiles, but are still close to the shore. This is
-   the area where fish are present, and it also happens to be the only area where
-   a sailor can appear as idle (since flags have to be on the shore), so it is
-   used to indicate whether an idle serf should be drawn as a sailor in the viewport.
-   Further, it is used to indicate on land certain positions that are impassable.*/
-/* TODO Clean up; this bit has too many different meanings. */
-#define MAP_DEEP_WATER(pos)  ((uint)((game.map.tiles[(pos)].flags >> 6) & 1))
-
-#define MAP_PATHS(pos)  ((uint)(game.map.tiles[(pos)].flags & 0x3f))
+#define MAP_PATHS(pos)  ((uint)(game.map.tiles[(pos)].paths & 0x3f))
 
 #define MAP_HAS_OWNER(pos)  ((uint)((game.map.tiles[(pos)].height >> 7) & 1))
 #define MAP_OWNER(pos)  ((uint)((game.map.tiles[(pos)].height >> 5) & 3))
@@ -77,18 +66,32 @@
 #define MAP_TYPE_DOWN(pos)  ((uint)(game.map.tiles[(pos)].type & 0xf))
 
 #define MAP_OBJ(pos)  ((map_obj_t)(game.map.tiles[(pos)].obj & 0x7f))
+#define MAP_IDLE_SERF(pos)  ((uint)((game.map.tiles[(pos)].obj >> 7) & 1))
 
-/* Whether any of the two up/down tiles at this pos are water.
-   This is used to indicate whether waves should be drawn. */
-#define MAP_WATER(pos)  ((uint)((game.map.tiles[(pos)].obj >> 7) & 1))
+#define MAP_OBJ_INDEX(pos)  ((uint)game.map.tiles[(pos)].obj_index)
+#define MAP_RES_TYPE(pos)  ((ground_deposit_t)((game.map.tiles[(pos)].resource >> 5) & 7))
+#define MAP_RES_AMOUNT(pos)  ((uint)(game.map.tiles[(pos)].resource & 0x1f))
+#define MAP_RES_FISH(pos)  ((uint)game.map.tiles[(pos)].resource)
+#define MAP_SERF_INDEX(pos)  ((uint)game.map.tiles[(pos)].serf)
 
-#define MAP_OBJ_INDEX(pos)  ((uint)game.map.tiles[(pos)].u.index)
-#define MAP_IDLE_SERF(pos)  ((uint)((game.map.tiles[(pos)].u.s.field_1 >> 7) & 1))
-#define MAP_PLAYER(pos)  ((uint)(game.map.tiles[(pos)].u.s.field_1 & 3))
-#define MAP_RES_TYPE(pos)  ((ground_deposit_t)((game.map.tiles[(pos)].u.s.resource >> 5) & 7))
-#define MAP_RES_AMOUNT(pos)  ((uint)(game.map.tiles[(pos)].u.s.resource & 0x1f))
-#define MAP_RES_FISH(pos)  ((uint)game.map.tiles[(pos)].u.s.resource)
-#define MAP_SERF_INDEX(pos)  ((uint)game.map.tiles[(pos)].serf_index)
+
+#define MAP_HAS_FLAG(pos)  (MAP_OBJ(pos) == MAP_OBJ_FLAG)
+#define MAP_HAS_BUILDING(pos)  (MAP_OBJ(pos) >= MAP_OBJ_SMALL_BUILDING && \
+				MAP_OBJ(pos) <= MAP_OBJ_CASTLE)
+
+
+
+/* Whether any of the two up/down tiles at this pos are water. */
+#define MAP_WATER_TILE(pos)				\
+	(MAP_TYPE_DOWN(pos) < 4 &&			\
+	 MAP_TYPE_UP(pos) < 4)
+
+/* Whether the position is completely surrounded by water. */
+#define MAP_IN_WATER(pos)				\
+	(MAP_WATER_TILE(pos) &&				\
+	 MAP_WATER_TILE(MAP_MOVE_UP_LEFT(pos)) &&	\
+	 MAP_TYPE_DOWN(MAP_MOVE_LEFT(pos)) < 4 &&	\
+	 MAP_TYPE_UP(MAP_MOVE_UP(pos)) < 4)
 
 
 typedef enum {
@@ -199,20 +202,18 @@ typedef enum {
 } map_obj_t;
 
 
-/* A map vertex can be OPEN which means that
+/* A map space can be OPEN which means that
    a building can be constructed in the space.
    A FILLED space can be passed by a serf, but
-   nothing can be built in this space. The higher
-   space classes can neither be used for contructions
-   nor passed by serfs (except flag which can be passed). */
+   nothing can be built in this space except roads.
+   A SEMIPASSABLE space is like FILLED but no roads
+   can be built. A IMPASSABLE space can neither be
+   used for contructions nor passed by serfs. */
 typedef enum {
 	MAP_SPACE_OPEN = 0,
 	MAP_SPACE_FILLED,
+	MAP_SPACE_SEMIPASSABLE,
 	MAP_SPACE_IMPASSABLE,
-	MAP_SPACE_FLAG,
-	MAP_SPACE_SMALL_BUILDING,
-	MAP_SPACE_LARGE_BUILDING,
-	MAP_SPACE_CASTLE
 } map_space_t;
 
 typedef enum {
@@ -224,18 +225,13 @@ typedef enum {
 } ground_deposit_t;
 
 typedef struct {
-	uint8_t flags;
+	uint8_t paths;
 	uint8_t height;
 	uint8_t type;
 	uint8_t obj;
-	union {
-		uint16_t index;
-		struct {
-			uint8_t resource;
-			uint8_t field_1;
-		} s;
-	} u;
-	uint16_t serf_index;
+	uint16_t obj_index;
+	uint8_t resource;
+	uint16_t serf;
 } map_tile_t;
 
 
@@ -268,12 +264,11 @@ void map_remove_ground_deposit(map_pos_t pos, int amount);
 void map_remove_fish(map_pos_t pos, int amount);
 void map_set_serf_index(map_pos_t pos, int index);
 
-int map_is_deep_water(map_pos_t pos);
-
 void map_init_dimensions(map_t *map);
 void map_init_minimap();
 
 void map_init();
+void map_deinit();
 void map_update();
 
 

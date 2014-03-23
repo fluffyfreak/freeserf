@@ -1,5 +1,5 @@
 /*
- * audio.c - Music and sound effects playback.
+ * audio-sdlmixer.c - Music and sound effects playback using SDL_mixer.
  *
  * Copyright (C) 2012  Wicked_Digger <wicked_digger@mail.ru>
  *
@@ -50,46 +50,46 @@ typedef struct {
 
 static list_t sfx_clips_to_play;
 static list_t midi_tracks;
-static int initialized = 0;
 static int sfx_enabled = 1;
 static int midi_enabled = 1;
-static midi_t current_track = -1;
+static midi_t current_track = MIDI_TRACK_NONE;
 
-static void
-midi_track_finished();
+static void midi_track_finished();
 
-static int
+
+int
 audio_init()
 {
+	LOGI("audio-sdlmixer", "Initializing audio driver `sdlmixer'.");
+
 	list_init(&sfx_clips_to_play);
 	list_init(&midi_tracks);
-	
+
 	int r = Mix_Init(0);
 	if (r != 0) {
-		LOGE("audio", "Could not init SDL_mixer: %s.", Mix_GetError());
+		LOGE("audio-sdlmixer", "Could not init SDL_mixer: %s.", Mix_GetError());
 		return -1;
-	}	
+	}
 
 	r = Mix_OpenAudio(8000, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 512);
 	if (r < 0) {
-		LOGE("audio", "Could not open audio device: %s.", Mix_GetError());
+		LOGE("audio-sdlmixer", "Could not open audio device: %s.", Mix_GetError());
 		return -1;
 	}
-	
+
 	r = Mix_AllocateChannels(16);
 	if (r != 16) {
-		LOGE("audio", "Failed to allocate channels: %s.", Mix_GetError());
+		LOGE("audio-sdlmixer", "Failed to allocate channels: %s.", Mix_GetError());
 		return -1;
 	}
 
 	Mix_HookMusicFinished(midi_track_finished);
 
-	initialized = 1;
 	return 0;
 }
 
 void
-audio_cleanup()
+audio_deinit()
 {
 	while (!list_is_empty(&sfx_clips_to_play)) {
 		list_elm_t *elm = list_remove_head(&sfx_clips_to_play);
@@ -104,7 +104,7 @@ audio_cleanup()
 		Mix_FreeMusic(track->music);
 		free(elm);
 	}
-	
+
 	Mix_CloseAudio();
 	Mix_Quit();
 }
@@ -149,7 +149,7 @@ sfx_produce_wav(char* data, uint32_t size, size_t *new_size)
 #define WRITE_BYTE_WG(X) {*current = (uint8_t)X; current++;}
 
 	*new_size = 44 + size*2;
-	
+
 	char *result = malloc(*new_size);
 	if (result == NULL) abort();
 
@@ -189,11 +189,6 @@ sfx_play_clip(sfx_t sfx)
 		return;
 	}
 
-	if (0 == initialized) {
-		int r = audio_init();
-		if (r < 0) return;
-	}
-
 	audio_clip_t *audio_clip = NULL;
 	list_elm_t *elm;
 	list_foreach(&sfx_clips_to_play, elm) {
@@ -208,7 +203,7 @@ sfx_play_clip(sfx_t sfx)
 		audio_clip->num = sfx;
 
 		size_t size = 0;
-		char *data = gfx_get_data_object(DATA_SFX_BASE + sfx, &size);
+		char *data = data_get_object(DATA_SFX_BASE + sfx, &size);
 
 		char *wav = sfx_produce_wav(data, (int)size, &size);
 
@@ -216,7 +211,7 @@ sfx_play_clip(sfx_t sfx)
 		audio_clip->chunk = Mix_LoadWAV_RW(rw, 0);
 		free(wav);
 		if (!audio_clip->chunk) {
-			LOGE("audio", "Mix_LoadWAV_RW: %s.", Mix_GetError());
+			LOGE("audio-sdlmixer", "Mix_LoadWAV_RW: %s.", Mix_GetError());
 			free(audio_clip);
 			return;
 		}
@@ -226,7 +221,7 @@ sfx_play_clip(sfx_t sfx)
 
 	int r = Mix_PlayChannel(-1, audio_clip->chunk, 0);
 	if (r < 0) {
-		LOGE("audio", "Could not play SFX clip: %s.", Mix_GetError());
+		LOGE("audio-sdlmixer", "Could not play SFX clip: %s.", Mix_GetError());
 		return;
 	}
 }
@@ -319,7 +314,7 @@ xmi_process_single(char *data, int length, midi_file_t *midi)
 	int name = be32toh(*(int*)data);
 	uint32_t string = htobe32(name);
 
-	LOGV("audio", "Processing XMI chunk: %.4s", (char *)&string);
+	LOGV("audio-sdlmixer", "Processing XMI chunk: %.4s", (char *)&string);
 
 	data += 4;
 	int processed = 0;
@@ -333,7 +328,7 @@ xmi_process_single(char *data, int length, midi_file_t *midi)
 		}
 	}
 	if (0 == processed) {
-		LOGD("audio", "Unknown XMI chunk: %s (0x%X)", string, name);
+		LOGD("audio-sdlmixer", "Unknown XMI chunk: %s (0x%X)", string, name);
 	}
 	return size+4;
 }
@@ -359,10 +354,10 @@ xmi_process_INFO(char *data, int length, midi_file_t *midi)
 	data += 4;
 	size = be32toh(size);
 	if (size != 2) {
-		LOGD("audio", "\tInconsistent INFO block.");
+		LOGD("audio-sdlmixer", "\tInconsistent INFO block.");
 	} else {
 		uint16_t track_count = *(uint16_t*)data;
-		LOGV("audio", "\tXMI contains %d track(s)", track_count);
+		LOGV("audio-sdlmixer", "\tXMI contains %d track(s)", track_count);
 	}
 	return size + 4;
 }
@@ -376,12 +371,12 @@ xmi_process_TIMB(char *data, int length, midi_file_t *midi)
 	uint16_t count = *(uint16_t*)data;
 	data += 2;
 	if (count*2 + 2 != size) {
-		LOGD("audio", "\tInconsistent TIMB block.");
+		LOGD("audio-sdlmixer", "\tInconsistent TIMB block.");
 	} else {
 		for (int i = 0; i < count; i++) {
 			uint8_t num = *data++;
 			uint8_t bank = *data++;
-			LOGV("audio", "\tTIMB entry %02d: %d, %d", i, (int)num, (int)bank);
+			LOGV("audio-sdlmixer", "\tTIMB entry %02d: %d, %d", i, (int)num, (int)bank);
 		}
 	}
 	return size + 4;
@@ -398,11 +393,11 @@ xmi_process_EVNT(char *data, int length, midi_file_t *midi)
 
 	uint32_t unknown = 0;
 	READ_DATA(unknown);
-	
+
 	while (balance) {
 		uint8_t type = 0;
 		READ_DATA(type);
-		
+
 		if (type & 0x80) {
 			midi_node_t *node = malloc(sizeof(midi_node_t));
 			if (node == NULL) abort();
@@ -512,7 +507,7 @@ midi_write_variable_size(midi_file_t *midi, uint8_t **current, Uint64 val)
 		buf = (buf << 8) | 0x80 | (val & 0x7F);
 	}
 	if (midi->size <= (*current-midi->data) + count) {
-		midi_grow(midi,current);	
+		midi_grow(midi,current);
 	}
 	for (int i = 0; i < count; ++i) {
 		**current = (uint8_t)(buf & 0xFF);
@@ -585,13 +580,6 @@ midi_play_track(midi_t midi)
 		return;
 	}
 
-	if (0 == initialized) {
-		audio_init();
-		if (0 == initialized) {
-			return;
-		}
-	}
-
 	track_t *track = NULL;
 	list_elm_t *elm;
 	list_foreach(&midi_tracks, elm) {
@@ -609,7 +597,7 @@ midi_play_track(midi_t midi)
 		track->num = midi;
 
 		size_t size = 0;
-		char *data = gfx_get_data_object(DATA_MUSIC_GAME + midi, &size);
+		char *data = data_get_object(DATA_MUSIC_GAME + midi, &size);
 		if (NULL == data) {
 			free(track);
 			return;
@@ -628,7 +616,7 @@ midi_play_track(midi_t midi)
 		pqueue_deinit(&midi_file.nodes);
 
 		SDL_RWops *rw = SDL_RWFromMem(data, (int)size);
-		track->music = Mix_LoadMUS_RW(rw);
+		track->music = Mix_LoadMUS_RW(rw, 0);
 		if (NULL == track->music) {
 			free(track);
 			return;
@@ -639,7 +627,7 @@ midi_play_track(midi_t midi)
 
 	int r = Mix_PlayMusic(track->music, 0);
 	if (r < 0) {
-		LOGW("audio", "Could not play MIDI track: %s\n", Mix_GetError());
+		LOGW("audio-sdlmixer", "Could not play MIDI track: %s\n", Mix_GetError());
 		return;
 	}
 

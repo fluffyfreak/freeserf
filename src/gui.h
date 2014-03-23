@@ -25,6 +25,9 @@
 #include "gfx.h"
 #include "list.h"
 
+#define GUI_OBJECT(obj)     ((gui_object_t *)(obj))
+#define GUI_CONTAINER(obj)  ((gui_container_t *)(obj))
+
 
 typedef enum {
 	GUI_EVENT_TYPE_CLICK,
@@ -58,6 +61,7 @@ typedef void gui_set_size_func(gui_object_t *obj, int width, int height);
 struct gui_object {
 	int width, height;
 	int displayed;
+	int enabled;
 	int redraw;
 	gui_container_t *parent;
 
@@ -68,11 +72,15 @@ struct gui_object {
 
 typedef void gui_set_redraw_child_func(gui_container_t *cont,
 				       gui_object_t *child);
+typedef int gui_get_child_position_func(gui_container_t *cont,
+					gui_object_t *child,
+					int *x, int *t);
 
 struct gui_container {
 	gui_object_t obj;
 
 	gui_set_redraw_child_func *set_redraw_child;
+	gui_get_child_position_func *get_child_position;
 };
 
 
@@ -84,10 +92,14 @@ void gui_object_redraw(gui_object_t *obj, frame_t *frame);
 int gui_object_handle_event(gui_object_t *obj, const gui_event_t *event);
 void gui_object_set_size(gui_object_t *obj, int width, int height);
 void gui_object_set_displayed(gui_object_t *obj, int displayed);
+void gui_object_set_enabled(gui_object_t *obj, int enabled);
 void gui_object_set_redraw(gui_object_t *obj);
 
 void gui_container_init(gui_container_t *cont);
 void gui_container_set_redraw_child(gui_container_t *cont,
 				    gui_object_t *child);
+int gui_container_get_child_position(gui_container_t *cont,
+				     gui_object_t *child,
+				     int *x, int *y);
 
 #endif /* !_GUI_H */

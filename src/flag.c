@@ -137,42 +137,18 @@ flag_prioritize_pickup(flag_t *flag, dir_t dir, const int flag_prio[])
 	int res_next = -1;
 	int res_prio = -1;
 
-	for (int i = 0; i < 7; i++) {
-		/* Use flag_prio to prioritize resource pickup. */
-		dir_t res_dir = ((flag->res_waiting[i] >> 5) & 7)-1;
-		resource_type_t res_type = (flag->res_waiting[i] & 0x1f)-1;
-		if (res_dir == dir && flag_prio[res_type] > res_prio) {
-			res_next = i;
-			res_prio = flag_prio[res_type];
+	for (int i = 0; i < FLAG_MAX_RES_COUNT; i++) {
+		if (flag->slot[i].type != RESOURCE_NONE) {
+			/* Use flag_prio to prioritize resource pickup. */
+			dir_t res_dir = flag->slot[i].dir;
+			resource_type_t res_type = flag->slot[i].type;
+			if (res_dir == dir && flag_prio[res_type] > res_prio) {
+				res_next = i;
+				res_prio = flag_prio[res_type];
+			}
 		}
 	}
 
 	flag->other_end_dir[dir] &= 0x78;
 	if (res_next > -1) flag->other_end_dir[dir] |= BIT(7) | res_next;
-}
-
-/* Cancel transport of resources to building at flag. */
-void
-flag_cancel_transported_stock(flag_t *flag, int res)
-{
-	const int res_stock_type[] = {
-		-1,
-		0, 0, 0, 0, 0, 0, 1, 0,
-		-1, 1, 1, 1, 0, 1, 1, -1,
-		-1, -1, -1, -1, -1, -1, -1,
-		-1, -1
-	};
-
-	assert(FLAG_HAS_BUILDING(flag));
-
-	if (res_stock_type[res] >= 0 &&
-	    1/*FLAG_INDEX(flag) != ..*/) {
-		building_t *building = flag->other_endpoint.b[DIR_UP_LEFT];
-		if (!BUILDING_IS_DONE(building) ||
-		    (BUILDING_TYPE(building) != BUILDING_STOCK &&
-		     BUILDING_TYPE(building) != BUILDING_CASTLE)) {
-			assert(res_stock_type[res] >= 0);
-			building->stock[res_stock_type[res]].requested -= 1;
-		}
-	}
 }

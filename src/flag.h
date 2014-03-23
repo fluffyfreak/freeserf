@@ -25,6 +25,10 @@
 #include "freeserf.h"
 #include "list.h"
 #include "map.h"
+#include "building.h"
+
+/* Max number of resources waiting at a flag */
+#define FLAG_MAX_RES_COUNT  8
 
 #define FLAG_INDEX(ptr)  ((int)((ptr) - game.flags))
 #define FLAG_ALLOCATED(i)  BIT_TEST(game.flag_bitmap[(i)>>3], 7-((i)&7))
@@ -77,6 +81,12 @@
 #define FLAG_ACCEPTS_RESOURCES(flag)  ((int)(((flag)->bld2_flags >> 7) & 1))
 
 
+typedef struct {
+	resource_type_t type;
+	dir_t dir;
+	int dest;
+} resource_slot_t;
+
 typedef struct flag flag_t;
 
 struct flag {
@@ -87,8 +97,7 @@ struct flag {
 	int endpoint;
 	int transporter;
 	int length[6];
-	int res_waiting[8];
-	int res_dest[8];
+	resource_slot_t slot[FLAG_MAX_RES_COUNT];
 	union {
 		building_t *b[6];
 		flag_t *f[6];
@@ -114,6 +123,5 @@ int flag_search_single(flag_t *src, flag_search_func *callback,
 		       int land, int transporter, void *data);
 
 void flag_prioritize_pickup(flag_t *flag, dir_t dir, const int flag_prio[]);
-void flag_cancel_transported_stock(flag_t *flag, int res);
 
 #endif /* ! _FLAG_H */

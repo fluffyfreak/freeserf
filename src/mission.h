@@ -1,5 +1,5 @@
 /*
- * minimap.h - Minimap GUI component
+ * mission.h - Predefined game mission maps
  *
  * Copyright (C) 2013  Jon Lund Steffensen <jonlst@gmail.com>
  *
@@ -19,34 +19,23 @@
  * along with freeserf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MINIMAP_H
-#define _MINIMAP_H
+#ifndef _MISSION_H
+#define _MISSION_H
 
-#include "gui.h"
-#include "map.h"
+#include "random.h"
 
 typedef struct {
-	gui_object_t obj;
-	struct interface *interface;
+	random_state_t rnd;
+	struct {
+		int face;
+		int supplies;
+		int intelligence;
+		int reproduction;
+		struct { int col; int row; } castle;
+	} player[4];
+} mission_t;
 
-	int offset_x, offset_y;
-	int scale;
+extern const mission_t mission[];
+extern const int mission_count;
 
-	int advanced;
-	int flags;
-} minimap_t;
-
-
-void minimap_init(minimap_t *minimap, struct interface *interface);
-
-void minimap_set_scale(minimap_t *minimap, int scale);
-
-void minimap_move_to_map_pos(minimap_t *minimap, map_pos_t pos);
-void minimap_move_by_pixels(minimap_t *minimap, int x, int y);
-map_pos_t minimap_get_current_map_pos(minimap_t *minimap);
-
-void minimap_screen_pix_from_map_pos(minimap_t *minimap, map_pos_t pos, int *sx, int *sy);
-map_pos_t minimap_map_pos_from_screen_pix(minimap_t *minimap, int x, int y);
-
-
-#endif /* !_MINIMAP_H */
+#endif /* !_MISSION_H */

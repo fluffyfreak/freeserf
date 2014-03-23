@@ -24,11 +24,16 @@
 
 #include "gui.h"
 #include "viewport.h"
+#include "building.h"
 #include "panel.h"
+#include "game-init.h"
+#include "notification.h"
 #include "list.h"
 #include "popup.h"
 #include "player.h"
 #include "random.h"
+
+#define MAX_ROAD_LENGTH  256
 
 
 typedef enum {
@@ -51,7 +56,7 @@ struct interface {
 	int redraw_top;
 	list_t floats;
 
-	frame_t cursor_buffer;
+	gui_object_t *cursor_lock_target;
 
 	uint32_t *serf_animation_table;
 
@@ -60,6 +65,8 @@ struct interface {
 	viewport_t viewport;
 	panel_bar_t panel;
 	popup_box_t popup;
+	game_init_box_t init_box;
+	notification_box_t notification_box;
 
 	map_pos_t map_cursor_pos;
 	map_cursor_type_t map_cursor_type;
@@ -67,101 +74,30 @@ struct interface {
 
 	uint last_const_tick;
 
-	/* 0 */
-	int flags;
-	int click;
-	int pointer_x_max;
-	int pointer_y_max;
-	int pointer_x;
-	int pointer_y;
-	int pointer_x_off;
-	int pointer_x_clk;
-	int pointer_y_clk;
-	/* 10 */
-	/* OBSOLETE
-	int pointer_x_drag;
-	int pointer_y_drag;
-	*/
-	/* 16 */
+	int building_road;
+	map_pos_t building_road_source;
+	dir_t building_road_dirs[MAX_ROAD_LENGTH];
+	int building_road_length;
+	int building_road_valid_dir;
+
 	int sfx_queue[4];
-	frame_t *frame;
-	/* 20 */
-	int game_area_cols;
-	/* 2E */
-	int minimap_advanced;
-	/* 30 */
-	int bottom_panel_x; /* ADDITION */
-	int bottom_panel_y;
-	int bottom_panel_width; /* ADDITION */
-	int bottom_panel_height; /* ADDITION */
-	/* 3E */
-	int frame_width;
-	int frame_height;
-	/* 46 */
-	/*int col_game_area;*/ /* OBSOLETE */
-	/*int row_game_area;*/ /* OBSOLETE */
-	int col_offset;
-	int row_offset;
-	int map_min_x;
-	int map_min_y; /* ADDITION */
-	int game_area_rows;
-	int map_max_y;
-	/* 54 */
-	map_tile_t **map_rows;
-	/* 5C */
-	frame_t *popup_frame;
-	/* 60 */
+
 	int panel_btns[5];
-	int panel_btns_set[5];
-	int panel_btns_x;
-	int msg_icon_x;
-	/* 70 */
-	box_t box;
-	box_t clkmap;
-	/* OBSOLETE moved to minimap object
-	int minimap_row;
-	int minimap_col;
-	*/
-	/* 78 */
-	int popup_x;
-	int popup_y;
-	/* 82 */
+
 	player_t *player;
 	int config;
 	int msg_flags;
-	int map_cursor_col_max;
-	/* 8E */
-	int map_cursor_col_off;
-	int map_y_off;
-	/*int **map_serf_rows;*/ /* OBSOLETE */
-	int message_box;
-	/* 9A */
-	int map_x_off;
-	/* 9E */
-	int right_dbl_time;
-	/* A0 */
-	int panel_btns_dist;
-	/* A4 */
+
 	sprite_loc_t map_cursor_sprites[7];
-	int road_length;
-	int road_valid_dir;
-	uint8_t minimap_flags;
-	/* D2 */
+
 	int current_stat_8_mode;
 	int current_stat_7_item;
-	int pathway_scrolling_threshold;
-	/* 1B4 */
-	/* Determines what sfx should be played. */
+
 	int water_in_view;
 	int trees_in_view;
-	/* 1C0 */
+
 	int return_timeout;
-	int return_col_game_area;
-	int return_row_game_area;
-	/* 1E0 */
-	int panel_btns_first_x;
-	int timer_icon_x;
-	/* ... */
+	int return_pos;
 };
 
 
@@ -173,15 +109,21 @@ popup_box_t *interface_get_popup_box(interface_t *interface);
 void interface_open_popup(interface_t *interface, int box);
 void interface_close_popup(interface_t *interface);
 
+void interface_open_game_init(interface_t *interface);
+void interface_close_game_init(interface_t *interface);
+
+void interface_open_message(interface_t *interface);
+void interface_return_from_message(interface_t *interface);
+void interface_close_message(interface_t *interface);
+
+void interface_set_player(interface_t *interface, uint player);
 void interface_update_map_cursor_pos(interface_t *interface, map_pos_t pos);
 
 void interface_build_road_begin(interface_t *interface);
 void interface_build_road_end(interface_t *interface);
-
-int interface_build_road_segment(interface_t *interface, map_pos_t pos, dir_t dir);
-int interface_remove_road_segment(interface_t *interface, map_pos_t pos, dir_t dir);
-
-int interface_build_road(interface_t *interface, map_pos_t pos, dir_t *dirs, uint length);
+int interface_build_road_segment(interface_t *interface, dir_t dir);
+int interface_remove_road_segment(interface_t *interface);
+int interface_extend_road(interface_t *interface, dir_t *dirs, uint length);
 
 void interface_demolish_object(interface_t *interface);
 
@@ -195,8 +137,6 @@ void interface_init(interface_t *interface);
 void interface_set_top(interface_t *interface, gui_object_t *obj);
 void interface_add_float(interface_t *interface, gui_object_t *obj,
 			 int x, int y, int width, int height);
-
-void interface_set_cursor(interface_t *interface, int x, int y);
 
 
 void interface_update(interface_t *interface);
