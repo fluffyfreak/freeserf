@@ -41,7 +41,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c99" />
-			<Add directory="D:/Lib3rd/SDL-1.2.15/include" />
+			<Add directory="D:/Lib3rd/sdl2/include" />
 		</Compiler>
 		<Linker>
 			<Add library="mingw32" />
@@ -52,10 +52,13 @@
 			<Add library="winmm" />
 			<Add library="dxguid" />
 			<Add library="SDL_mixer" />
-			<Add directory="D:/Lib3rd/SDL-1.2.15/lib" />
-			<Add directory="D:/Lib3rd/SDL-1.2.15/lib/x86" />
+			<Add directory="D:/Lib3rd/sdl2/lib" />
+			<Add directory="D:/Lib3rd/sdl2/lib/x86" />
 		</Linker>
-		<Unit filename="../src/audio.c">
+		<Unit filename="../src/audio-dummy.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/audio-sdlmixer.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/audio.h" />
@@ -63,6 +66,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/building.h" />
+		<Unit filename="../src/data-source-dos.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../src/data.h" />
 		<Unit filename="../src/debug.h" />
 		<Unit filename="../src/flag.c">
@@ -74,6 +80,10 @@
 		</Unit>
 		<Unit filename="../src/freeserf.h" />
 		<Unit filename="../src/freeserf_endian.h" />
+		<Unit filename="../src/game-init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/game-init.h" />
 		<Unit filename="../src/game.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -107,6 +117,14 @@
 		</Unit>
 		<Unit filename="../src/minimap.h" />
 		<Unit filename="../src/misc.h" />
+		<Unit filename="../src/mission.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/mission.h" />
+		<Unit filename="../src/notification.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/notification.h" />
 		<Unit filename="../src/panel.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -147,6 +165,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/version.h" />
+		<Unit filename="../src/version_vcs.h" />
 		<Unit filename="../src/viewport.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -115,9 +115,9 @@
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\src\audio.h
+1395603987 d:\code\freeserf\src\audio.h
 
-1362432943 d:\code\freeserf\src\gfx.h
+1395603987 d:\code\freeserf\src\gfx.h
 	<stdint.h>
 	"SDL.h"
 
@@ -248,16 +248,17 @@
 	<assert.h>
 	"building.h"
 
-1386420383 d:\code\freeserf\src\building.h
+1395603987 d:\code\freeserf\src\building.h
 	<stdint.h>
 	"map.h"
+	"freeserf.h"
 
-1386420383 d:\code\freeserf\src\map.h
+1395603987 d:\code\freeserf\src\map.h
 	<stdlib.h>
 	<stdint.h>
 	"misc.h"
 
-1386420383 source:d:\code\freeserf\src\flag.c
+1395603987 source:d:\code\freeserf\src\flag.c
 	<stdio.h>
 	<stdlib.h>
 	<assert.h>
@@ -268,25 +269,25 @@
 	"list.h"
 	"misc.h"
 
-1386420383 d:\code\freeserf\src\flag.h
+1395603987 d:\code\freeserf\src\flag.h
 	"freeserf.h"
 	"list.h"
 	"map.h"
+	"building.h"
 
-1386420383 d:\code\freeserf\src\freeserf.h
+1395603987 d:\code\freeserf\src\freeserf.h
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
 	"gfx.h"
 	"map.h"
 	"random.h"
-	"building.h"
 	"serf.h"
 
 1367955353 d:\code\freeserf\src\random.h
 	<stdint.h>
 
-1386420383 d:\code\freeserf\src\serf.h
+1395603987 d:\code\freeserf\src\serf.h
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -294,7 +295,7 @@
 	"misc.h"
 	"log.h"
 
-1386420383 d:\code\freeserf\src\player.h
+1395603987 d:\code\freeserf\src\player.h
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -302,7 +303,7 @@
 	"map.h"
 	"gfx.h"
 
-1386420383 d:\code\freeserf\src\game.h
+1395603987 d:\code\freeserf\src\game.h
 	"player.h"
 	"flag.h"
 	"serf.h"
@@ -595,7 +596,7 @@
 1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_types.h
 	"SDL_stdinc.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_stdinc.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_stdinc.h
 	"SDL_config.h"
 	<sys/types.h>
 	<stdio.h>
@@ -621,7 +622,7 @@
 	<stdlib.h>
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config.h
 	"SDL_platform.h"
 	"SDL_config_dreamcast.h"
 	"SDL_config_macos.h"
@@ -631,27 +632,27 @@
 	"SDL_config_os2.h"
 	"SDL_config_minimal.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_platform.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_platform.h
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_win32.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_win32.h
 	"SDL_platform.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\begin_code.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\begin_code.h
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\close_code.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\close_code.h
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_rwops.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_rwops.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_error.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_error.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_audio.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_audio.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_endian.h"
@@ -661,19 +662,19 @@
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_endian.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_endian.h
 	"SDL_stdinc.h"
 	<endian.h>
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_mutex.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_mutex.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_thread.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_thread.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_mutex.h"
@@ -681,12 +682,12 @@
 	<process.h>
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_version.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_version.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl.h
 	"SDL_main.h"
 	"SDL_stdinc.h"
 	"SDL_audio.h"
@@ -705,25 +706,25 @@
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_main.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_main.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_cdrom.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_cdrom.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_cpuinfo.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_cpuinfo.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_events.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_events.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_active.h"
@@ -734,52 +735,52 @@
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_active.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_active.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_keyboard.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_keyboard.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_keysym.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_keysym.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_keysym.h
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_mouse.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_mouse.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_video.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_video.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_video.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_rwops.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_joystick.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_joystick.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_quit.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_quit.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_loadso.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_loadso.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1386420383 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_timer.h
+1395603975 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_timer.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
@@ -809,4 +810,8 @@
 1325720122 d:\code\freeserf\win32\sdl-1.2.15\include\sdl_config_minimal.h
 	"SDL_platform.h"
 	<stdarg.h>
+
+1395603987 source:d:\code\freeserf\src\audio-dummy.c
+	"audio.h"
+	"log.h"
 
